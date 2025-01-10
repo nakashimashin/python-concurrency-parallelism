@@ -64,6 +64,10 @@ heatmap = get_gradcam_heatmap(model, preprocessed_img, 'block5_conv3')
 superimposed_img = superimpose_heatmap(img_path, heatmap, alpha=0.6)
 superimposed_img = np.clip(superimposed_img, 0, 255).astype(np.uint8)
 
+# 保存先ディレクトリの設定
+result_dir = './content/result'
+os.makedirs(result_dir, exist_ok=True)  # ディレクトリが存在しない場合は作成
+
 # 結果の表示（ファイルに保存）
 plt.figure(figsize=(10, 10))
 
@@ -80,5 +84,6 @@ plt.imshow(cv2.cvtColor(superimposed_img, cv2.COLOR_BGR2RGB))
 plt.axis('off')
 
 # 画像を保存
-plt.savefig('grad_cam_result.png')
-print("Grad-CAM visualization saved as 'grad_cam_result.png'")
+save_path = os.path.join(result_dir, 'grad_cam_result.png')
+plt.savefig(save_path)
+print("Grad-CAM visualization saved as '{save_path}'")
