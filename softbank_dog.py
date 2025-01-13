@@ -39,3 +39,11 @@ outputs = keras.layers.Dense(units, activation='softmax')(x)
 
 # モデルをインスタンス化
 revised_model = keras.Model(inputs, outputs)
+
+revised_model.summary()
+
+# モデルのコンパイル
+revised_model.compile(
+    loss=keras.losses.BinaryCrossentropy(from_logits=True),  # 損失関数としてバイナリクロスエントロピーを使用。from_logits=True はモデルの出力がロジットであることを示す
+    metrics=[keras.metrics.categorical_accuracy]  # 評価指標としてカテゴリカル精度を使用
+)
