@@ -47,3 +47,16 @@ revised_model.compile(
     loss=keras.losses.BinaryCrossentropy(from_logits=True),  # 損失関数としてバイナリクロスエントロピーを使用。from_logits=True はモデルの出力がロジットであることを示す
     metrics=[keras.metrics.categorical_accuracy]  # 評価指標としてカテゴリカル精度を使用
 )
+
+#データ拡張
+datagen = ImageDataGenerator(
+        featurewise_center=True, # データセット全体で，入力の平均を0にする
+        samplewise_center=True,  # 各サンプルの平均を0にする
+        rotation_range=10,  # 整数．画像をランダムに回転する回転範囲．
+        zoom_range = 0.1, # 浮動小数点数または[lower，upper]．ランダムにズームする範囲．
+                          # 浮動小数点数が与えられた場合，[lower, upper] = [1-zoom_range, 1+zoom_range]
+        width_shift_range=0.1,  # r浮動小数点数（横幅に対する割合）．ランダムに水平シフトする範囲
+        height_shift_range=0.1,  # 浮動小数点数（縦幅に対する割合）．ランダムに垂直シフトする範囲
+        horizontal_flip=True,  # 水平方向に入力をランダムに反転
+        vertical_flip=True # 垂直方向に入力をランダムに反転
+)
