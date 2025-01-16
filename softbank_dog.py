@@ -1,15 +1,15 @@
-import numpy as np
+# import numpy as np
 from tensorflow import keras
 # データの拡張
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-# 画像の読込用
-import matplotlib.image as mpimg
-# 画像の表示用
-import matplotlib.pyplot as plt
-# 画像をPIL形式で読み込む。画像サイズの変更が可能
-from tensorflow.keras.preprocessing import image as image_utils
-# 画像の前処理
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
+# # 画像の読込用
+# import matplotlib.image as mpimg
+# # 画像の表示用
+# import matplotlib.pyplot as plt
+# # 画像をPIL形式で読み込む。画像サイズの変更が可能
+# from tensorflow.keras.preprocessing import image as image_utils
+# # 画像の前処理
+# from tensorflow.keras.applications.imagenet_utils import preprocess_input
 
 pre_model = keras.applications.VGG16(
     weights='imagenet',
@@ -60,3 +60,24 @@ datagen = ImageDataGenerator(
         horizontal_flip=True,  # 水平方向に入力をランダムに反転
         vertical_flip=True # 垂直方向に入力をランダムに反転
 )
+
+train_data_path = "data/train/"
+test_data_path = "data/test/"
+
+train_generator = datagen.flow_from_directory(train_data_path,
+                                            target_size=(224,224),
+                                            color_mode='rgb',
+                                            class_mode='categorical')
+
+test_generator = datagen.flow_from_directory(test_data_path,
+                                            target_size=(224,224),
+                                            color_mode='rgb',
+                                            class_mode='categorical')
+
+revised_model.fit(train_generator,
+                validation_data=test_generator,
+                steps_per_epoch=train_generator.samples // train_generator.batch_size,
+                validation_steps=test_generator.samples // test_generator.batch_size,
+                epochs=20)
+
+revised_model.evaluate(test_generator, steps=test_generator.samples/test_generator.batch_size)
