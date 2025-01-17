@@ -1,27 +1,69 @@
-import torch
-import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+import optuna
+from optuna.integration import OptunaSearchCV
 
-print("バージョン確認", torch.__version__)
 
-data = [[1, 2], [3, 4]]
-x_data = torch.tensor(data)
+## グリッドサーチ
+# iris = load_iris()
 
-print("確認1: ",x_data)
-print("型確認: ",x_data.dtype)
+# param_grid = dict(
+#     C=[0.01, 0.01, 0.1, 1, 10, 100],
+#     gamma=[0.01, 0.01, 0.1, 1, 10, 100]
+# )
+# print("Parameter grid:\n{}".format(param_grid))
 
-np_array = np.array(data)
-print("確認2: ",np_array)
-x_np = torch.from_numpy(np_array)
-print("確認3: ",x_np)
+# grid_search = GridSearchCV(SVC(), param_grid, cv=5)
 
-x_ones = torch.ones_like(x_data) # x_dataの特性（プロパティ）を維持
-print(f"Ones Tensor: \n {x_ones} \n")
+# X_train, X_test, y_train, y_test = train_test_split(
+#     iris.data, iris.target, random_state=0)
 
-x_rand = torch.rand_like(x_data, dtype=torch.float) # x_dataのdatatypeを上書き更新
-print(f"Random Tensor: \n {x_rand} \n")
+# grid_search.fit(X_train, y_train)
 
-tensor = torch.rand(3,4)
+# print("test set score:{:.2f}".format(grid_search.score(X_test, y_test)))
+# print("best parameters:{}".format(grid_search.best_params_))
+# print("Best cross-validation score :{:.2f}".format(grid_search.best_score_))
 
-print(f"Shape of tensor: {tensor.shape}")
-print(f"Datatype of tensor: {tensor.dtype}")
-print(f"Device tensor is stored on: {tensor.device}")
+## ランダムサーチ
+
+# iris = load_iris()
+
+# param_grid = dict(
+#     C=[0.01, 0.01, 0.1, 1, 10, 100],
+#     gamma=[0.01, 0.01, 0.1, 1, 10, 100]
+# )
+# print("Parameter grid:\n{}".format(param_grid))
+
+# Randomized_search = RandomizedSearchCV(SVC(), param_grid, n_iter=15, cv=5)
+
+# X_train, X_test, y_train, y_test = train_test_split(
+#     iris.data, iris.target, random_state=0)
+
+# Randomized_search.fit(X_train, y_train)
+# print("test set score:{:.2f}".format(Randomized_search.score(X_test, y_test)))
+# print("Best parameters:{}".format(Randomized_search.best_params_))
+# print("Best cross-validation score :{:.2f}".format(Randomized_search.best_score_))
+
+## Optuna ハイパーパラメータチューニング ベイズ最適化
+
+iris = load_iris()
+
+param_grid = dict(
+    C=optuna.distributions.FloatDistribution(0.01, 100),
+    gamma=optuna.distributions.FloatDistribution(0.01, 100)
+)
+
+print("Parameter grid:\n{}".format(param_grid))
+
+Optuna_search = OptunaSearchCV(SVC(), param_grid, n_trials=100, cv=5)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, random_state=0)
+
+Optuna_search.fit(X_train, y_train)
+print("test set score:{:.2f}".format(Optuna_search.score(X_test, y_test)))
+print("Best parameters:{}".format(Optuna_search.best_params_))
+print("Best cross-validation score :{:.2f}".format(Optuna_search.best_score_))
