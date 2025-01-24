@@ -49,3 +49,17 @@ print(c.shape)
 print(c.size())
 
 print(c.shape[0], c.shape[1])
+
+print("変形")
+e = torch.arange(8)
+print(e)
+print(e.shape)
+
+e = e.reshape(2,4)
+print(e)
+print(e.shape)
+
+print("view")
+e = e.view(1,2,4,1)
+print(e)
+print(e.shape)
